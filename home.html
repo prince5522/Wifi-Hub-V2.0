@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Wi-Fi Hub network management">
+  <title>Wi-Fi Hub | Home</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/app.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside id="sidebar" class="sidebar">
+    <a class="sidebar-brand" href="./home.html" aria-label="Wi-Fi Hub home">
+      <span class="brand-mark" aria-hidden="true">⌁</span><span><strong>Wi-Fi Hub</strong><small>SMART NETWORKS</small></span>
+    </a>
+    <nav class="sidebar-nav" aria-label="Main navigation"><a class="nav-link active" href="./home.html"><span class="nav-icon" aria-hidden="true">⌂</span><span>Home</span></a>
+<a class="nav-link" href="./network.html"><span class="nav-icon" aria-hidden="true">◉</span><span>My Network</span></a>
+<a class="nav-link" href="./templates.html"><span class="nav-icon" aria-hidden="true">▤</span><span>Templates</span></a>
+<a class="nav-link" href="./devices.html"><span class="nav-icon" aria-hidden="true">▦</span><span>Devices</span></a>
+<a class="nav-link" href="./bluetooth.html"><span class="nav-icon" aria-hidden="true">ᛒ</span><span>Bluetooth Tools</span></a>
+<a class="nav-link" href="./activity.html"><span class="nav-icon" aria-hidden="true">◷</span><span>Activity & Alerts</span></a>
+<a class="nav-link" href="./profile.html"><span class="nav-icon" aria-hidden="true">♙</span><span>Profile</span></a>
+<a class="nav-link" href="./users.html"><span class="nav-icon" aria-hidden="true">♧</span><span>Users & Access</span></a>
+<a class="nav-link" href="./settings.html"><span class="nav-icon" aria-hidden="true">⚙</span><span>Settings</span></a>
+<a class="nav-link" href="./ai-tutor.html"><span class="nav-icon" aria-hidden="true">✧</span><span>Wi-Fi Doctor</span></a><a class="nav-link" href="./help.html"><span class="nav-icon" aria-hidden="true">?</span><span>Help & Troubleshooting</span></a></nav>
+    <div class="sidebar-bottom"><div class="sidebar-caption">Manage networks you’re authorised to control.</div><button id="logoutButton" class="nav-link logout-button" type="button"><span class="nav-icon" aria-hidden="true">↪</span><span>Sign out</span></button></div>
+  </aside>
+  <button id="sidebarOverlay" class="sidebar-overlay" type="button" aria-label="Close navigation"></button>
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left"><button id="menuButton" class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="page-title"><h1>Home</h1><p>Simple help for your Wi-Fi, in one place</p></div></div>
+      <div class="topbar-right"><button class="btn btn-quiet theme-top-button" type="button" aria-haspopup="true" aria-expanded="false">◐ Themes</button><button id="installAppButton" class="btn btn-quiet install-top-button" type="button">Install app</button><span class="account-chip" id="accountChip">Checking account…</span></div>
+    </header>
+    <div class="page-content">
+<section class="welcome-panel panel">
+  <div><p class="eyebrow">WELCOME TO WI-FI HUB</p><h2 id="welcomeHeading">Let’s get your connection working better.</h2><p class="muted">Check your saved network, find connected-device information when available, or get clear steps to troubleshoot slow or unreliable Wi-Fi.</p></div>
+  <a class="btn btn-primary" href="./ai-tutor.html">Get Wi-Fi help</a>
+</section>
+
+<section class="stats-grid" aria-label="Network summary">
+  <article class="stat-card"><span class="stat-label">Saved networks</span><strong id="networkCount">—</strong><p>Your saved router profiles</p></article>
+  <article class="stat-card"><span class="stat-label">Network status</span><strong id="networkStatus">Loading…</strong><p>Saved details are not the same as live router status</p></article>
+  <article class="stat-card"><span class="stat-label">Connected devices</span><strong id="deviceCount">Not available</strong><p>Requires a supported router integration</p></article>
+</section>
+<section class="panel"><div class="section-heading"><div><h2>Saved networks</h2><p class="muted">Networks saved to your account appear here.</p></div><a class="btn btn-secondary" href="./network.html">Manage network</a></div><div id="savedNetworks" class="saved-networks"><p class="muted">Loading saved networks…</p></div></section>
+
+<section class="quick-grid">
+  <a class="quick-action" href="./network.html"><span>◉</span><b>My Wi-Fi network</b><small>Add or review your authorised router details.</small></a>
+  <a class="quick-action" href="./devices.html"><span>▦</span><b>Connected devices</b><small>Review device information when your router supports it.</small></a>
+  <a class="quick-action" href="./ai-tutor.html"><span>✧</span><b>Fix a Wi-Fi problem</b><small>Get guided steps for slow internet, weak signal, or dropouts.</small></a>
+  <a class="quick-action" href="./profile.html"><span>♙</span><b>My account</b><small>Check your profile and account details.</small></a>
+</section>
+<section class="panel">
+  <div class="section-heading"><div><h2>Before you start</h2><p class="muted">A few useful checks that do not require changing router settings.</p></div></div>
+  <ul class="help-list">
+    <li>Check that the router is powered on and its internet/WAN light looks normal.</li>
+    <li>Try opening the same website on another device to see whether the issue affects one device or the whole network.</li>
+    <li>If the signal is weak, move closer to the router and test again.</li>
+  </ul>
+  <p class="muted small-note">Wi-Fi Hub only shows live status or performs router actions when a compatible connection is configured. It will not invent device counts or claim a router action succeeded when it has not.</p>
+</section>
+<footer class="app-footer">© 2026 Wi-Fi Hub. All rights reserved.</footer>
+    </div>
+  </main>
+</div>
+<script>
+(() => {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const menu = document.getElementById('menuButton');
+  const closeMenu = () => {
+    sidebar?.classList.remove('open');
+    overlay?.classList.remove('show');
+    menu?.setAttribute('aria-expanded', 'false');
+  };
+  menu?.addEventListener('click', () => {
+    const open = !sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', open);
+    overlay.classList.toggle('show', open);
+    menu.setAttribute('aria-expanded', String(open));
+  });
+  overlay?.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.addEventListener('click', closeMenu));
+  const signOut = async () => {
+    try {
+      const mod = await import('./js/firebase.js');
+      await mod.auth.signOut();
+      location.href = './index.html';
+    } catch (err) {
+      const chip = document.getElementById('accountChip');
+      if (chip) chip.textContent = 'Could not sign out';
+      console.error(err);
+    }
+  };
+  document.getElementById('logoutButton')?.addEventListener('click', signOut);
+  document.getElementById('logoutButtonSettings')?.addEventListener('click', signOut);
+  import('./js/firebase.js').then(({auth}) => {
+    import('https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js').then(({onAuthStateChanged}) => {
+      onAuthStateChanged(auth, user => {
+        if (!user) { location.replace('./index.html'); return; }
+        const chip = document.getElementById('accountChip');
+        if (chip) chip.textContent = user.displayName || user.email || 'Signed in';
+      });
+    });
+  }).catch(err => {
+    const chip = document.getElementById('accountChip');
+    if (chip) chip.textContent = 'Authentication unavailable';
+    console.error('Firebase initialisation failed:', err);
+  });
+  if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+})();
+</script>
+<script src="./js/runtime-config.js"></script>
+  <script type="module" src="./js/dashboard.js"></script>
+<script src="./js/install.js" defer></script>
+<script type="module" src="./js/theme-menu.js"></script>
+<script type="module" src="./js/v10-enhancements.js"></script>
+</body>
+</html>

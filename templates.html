@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Wi-Fi Hub network management">
+  <title>Templates | Wi-Fi Hub</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/app.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside id="sidebar" class="sidebar">
+    <a class="sidebar-brand" href="./home.html" aria-label="Wi-Fi Hub dashboard">
+      <span class="brand-mark" aria-hidden="true">⌁</span><span><strong>Wi-Fi Hub</strong><small>SMART NETWORKS</small></span>
+    </a>
+    <nav class="sidebar-nav" aria-label="Main navigation"><a class="nav-link" href="./home.html"><span class="nav-icon" aria-hidden="true">⌂</span><span>Home</span></a>
+<a class="nav-link" href="./network.html"><span class="nav-icon" aria-hidden="true">◉</span><span>My Network</span></a>
+<a class="nav-link active" href="./templates.html"><span class="nav-icon" aria-hidden="true">▤</span><span>Templates</span></a>
+<a class="nav-link" href="./devices.html"><span class="nav-icon" aria-hidden="true">▦</span><span>Devices</span></a>
+<a class="nav-link" href="./bluetooth.html"><span class="nav-icon" aria-hidden="true">ᛒ</span><span>Bluetooth Tools</span></a>
+<a class="nav-link" href="./activity.html"><span class="nav-icon" aria-hidden="true">◷</span><span>Activity & Alerts</span></a>
+<a class="nav-link" href="./profile.html"><span class="nav-icon" aria-hidden="true">♙</span><span>Profile</span></a>
+<a class="nav-link" href="./users.html"><span class="nav-icon" aria-hidden="true">♧</span><span>Users & Access</span></a>
+<a class="nav-link" href="./settings.html"><span class="nav-icon" aria-hidden="true">⚙</span><span>Settings</span></a>
+<a class="nav-link" href="./ai-tutor.html"><span class="nav-icon" aria-hidden="true">✧</span><span>Wi-Fi Doctor</span></a><a class="nav-link" href="./help.html"><span class="nav-icon" aria-hidden="true">?</span><span>Help & Troubleshooting</span></a></nav>
+    <div class="sidebar-bottom"><div class="sidebar-caption">Manage networks you’re authorised to control.</div><button id="logoutButton" class="nav-link logout-button" type="button"><span class="nav-icon" aria-hidden="true">↪</span><span>Sign out</span></button></div>
+  </aside>
+  <button id="sidebarOverlay" class="sidebar-overlay" type="button" aria-label="Close navigation"></button>
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left"><button id="menuButton" class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="page-title"><h1>Templates</h1><p>Start with a ready-made setup, then customise it for your network.</p></div></div>
+      <div class="topbar-right"><button class="btn btn-quiet theme-top-button" type="button" aria-haspopup="true" aria-expanded="false">◐ Themes</button><span class="account-chip" id="accountChip">Checking account…</span></div>
+    </header>
+    <div class="page-content">
+<section class="panel">
+  <div class="section-heading"><div><h2>Built-in network templates</h2><p class="muted">Choose a starter, edit its details, then save it to My Network or keep it as your own reusable template.</p></div></div>
+  <div class="network-list" id="builtInTemplates">
+    <div class="network-item"><div><strong>Home Router</strong><p class="muted">Typical home router or Wi-Fi gateway.</p></div><button class="btn btn-quiet" type="button" data-template="home-router">Use template</button></div>
+    <div class="network-item"><div><strong>Wi-Fi Extender</strong><p class="muted">Range extender or repeater.</p></div><button class="btn btn-quiet" type="button" data-template="wifi-extender">Use template</button></div>
+    <div class="network-item"><div><strong>Office Network</strong><p class="muted">A network used in an office or small business.</p></div><button class="btn btn-quiet" type="button" data-template="office-network">Use template</button></div>
+  </div>
+</section>
+<section class="panel">
+  <div class="section-heading"><div><h2>Create or edit a network template</h2><p class="muted">The form can save a network record, or save the current values as a reusable custom template in Firestore.</p></div></div>
+  <div class="notice"><strong>Important:</strong> templates store configuration notes only. They do not automatically connect to, restart, or control a router.</div>
+  <form id="homeRouterForm" class="form-grid">
+    <div class="field"><label for="templateName">Template name</label><input id="templateName" maxlength="80" placeholder="e.g. My Home Router" required></div>
+    <div class="field"><label for="routerName">Router / network name</label><input id="routerName" name="name" value="My Home Router" maxlength="80" required></div>
+    <div class="field"><label for="gateway">Router IP / gateway</label><input id="gateway" name="gateway" value="192.168.1.1" inputmode="decimal" required><small class="muted">Use the actual gateway for your network.</small></div>
+    <div class="field"><label for="macAddress">Router MAC address (optional)</label><input id="macAddress" name="mac" placeholder="AA:BB:CC:DD:EE:FF"></div>
+    <div class="field"><label for="connectionType">Connection method</label><select id="connectionType" name="connectionType"><option value="not-configured">Not configured yet</option><option value="local-only">Local network only</option><option value="router-api">Supported router API</option><option value="backend">Configured secure backend</option></select></div>
+    <div class="field"><label for="location">Location (optional)</label><input id="location" name="location" placeholder="e.g. Living room"></div>
+    <div class="field"><label for="isp">Internet provider (optional)</label><input id="isp" name="isp" placeholder="e.g. Safaricom Home"></div>
+    <div class="field field-wide"><label for="notes">Notes (optional)</label><textarea id="notes" name="notes" rows="3" placeholder="Model, setup notes, or where the network is installed"></textarea></div>
+    <div class="field field-wide" style="display:flex;gap:10px;flex-wrap:wrap"><button id="saveTemplateButton" class="btn btn-primary" type="submit">Save to My Network</button><button id="saveCustomTemplateButton" class="btn btn-quiet" type="button">Save as Custom Template</button></div>
+    <div class="field field-wide"><p id="templateMessage" class="form-message" role="status" aria-live="polite"></p></div>
+  </form>
+</section>
+<section class="panel">
+  <div class="section-heading"><div><h2>My saved templates</h2><p class="muted">Custom templates are private to your signed-in account.</p></div><button id="refreshTemplatesButton" class="btn btn-quiet" type="button">Refresh</button></div>
+  <div id="savedTemplatesList" class="network-list"><p class="muted">Loading saved templates…</p></div>
+</section>
+      <footer class="app-footer">© 2026 Wi-Fi Hub. All rights reserved.</footer>
+    </div>
+  </main>
+</div>
+<script>
+(() => {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const menu = document.getElementById('menuButton');
+  const closeMenu = () => {
+    sidebar?.classList.remove('open');
+    overlay?.classList.remove('show');
+    menu?.setAttribute('aria-expanded', 'false');
+  };
+  menu?.addEventListener('click', () => {
+    const open = !sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', open);
+    overlay.classList.toggle('show', open);
+    menu.setAttribute('aria-expanded', String(open));
+  });
+  overlay?.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.addEventListener('click', closeMenu));
+  const signOut = async () => {
+    try {
+      const mod = await import('./js/firebase.js');
+      await mod.auth.signOut();
+      location.href = './index.html';
+    } catch (err) {
+      const chip = document.getElementById('accountChip');
+      if (chip) chip.textContent = 'Could not sign out';
+      console.error(err);
+    }
+  };
+  document.getElementById('logoutButton')?.addEventListener('click', signOut);
+  document.getElementById('logoutButtonSettings')?.addEventListener('click', signOut);
+  import('./js/firebase.js').then(({auth}) => {
+    import('https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js').then(({onAuthStateChanged}) => {
+      onAuthStateChanged(auth, user => {
+        if (!user) { location.replace('./index.html'); return; }
+        const chip = document.getElementById('accountChip');
+        if (chip) chip.textContent = user.displayName || user.email || 'Signed in';
+      });
+    });
+  }).catch(err => {
+    const chip = document.getElementById('accountChip');
+    if (chip) chip.textContent = 'Authentication unavailable';
+    console.error('Firebase initialisation failed:', err);
+  });
+  if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+})();
+</script>
+<script src="./js/runtime-config.js"></script>
+  <script type="module" src="./js/templates.js"></script>
+<script src="./js/install.js" defer></script>
+<script type="module" src="./js/theme-menu.js"></script>
+<script type="module" src="./js/v10-enhancements.js"></script>
+</body>
+</html>

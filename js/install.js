@@ -1,0 +1,7 @@
+let deferredInstallPrompt=null;
+const installButtons=()=>Array.from(document.querySelectorAll('[data-install-app],#installAppButton,#loginInstallButton'));
+function updateButtons(label,disabled=false){installButtons().forEach(b=>{b.textContent=label;b.disabled=disabled;});}
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstallPrompt=event;updateButtons('Install Wi-Fi Hub',false);});
+window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;updateButtons('Wi-Fi Hub installed',true);});
+async function install(){if(deferredInstallPrompt){deferredInstallPrompt.prompt();const result=await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;if(result?.outcome==='accepted')updateButtons('Installation accepted',true);else updateButtons('Install Wi-Fi Hub',false);return;}const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;if(standalone){alert('Wi-Fi Hub is already installed on this device.');return;}alert(isIOS?'To install Wi-Fi Hub: tap Share in Safari, then choose Add to Home Screen.':'To install Wi-Fi Hub: open your browser menu (⋮) and choose Install app or Install this site. If Install is not available, check that you are using a supported browser and that the site is served over HTTPS.');}
+document.addEventListener('click',event=>{const b=event.target.closest('[data-install-app],#installAppButton,#loginInstallButton');if(b){event.preventDefault();install();}});

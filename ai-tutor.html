@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Wi-Fi Hub network management">
+  <title>Wi-Fi Doctor | Wi-Fi Hub</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/app.css">
+</head>
+<body class="app-page">
+<div class="app-shell">
+  <aside id="sidebar" class="sidebar">
+    <a class="sidebar-brand" href="./home.html" aria-label="Wi-Fi Hub dashboard">
+      <span class="brand-mark" aria-hidden="true">⌁</span><span><strong>Wi-Fi Hub</strong><small>SMART NETWORKS</small></span>
+    </a>
+    <nav class="sidebar-nav" aria-label="Main navigation"><a class="nav-link" href="./home.html"><span class="nav-icon" aria-hidden="true">⌂</span><span>Home</span></a>
+<a class="nav-link" href="./network.html"><span class="nav-icon" aria-hidden="true">◉</span><span>My Network</span></a>
+<a class="nav-link" href="./templates.html"><span class="nav-icon" aria-hidden="true">▤</span><span>Templates</span></a>
+<a class="nav-link" href="./devices.html"><span class="nav-icon" aria-hidden="true">▦</span><span>Devices</span></a>
+<a class="nav-link" href="./bluetooth.html"><span class="nav-icon" aria-hidden="true">ᛒ</span><span>Bluetooth Tools</span></a>
+<a class="nav-link" href="./activity.html"><span class="nav-icon" aria-hidden="true">◷</span><span>Activity & Alerts</span></a>
+<a class="nav-link" href="./profile.html"><span class="nav-icon" aria-hidden="true">♙</span><span>Profile</span></a>
+<a class="nav-link" href="./users.html"><span class="nav-icon" aria-hidden="true">♧</span><span>Users & Access</span></a>
+<a class="nav-link" href="./settings.html"><span class="nav-icon" aria-hidden="true">⚙</span><span>Settings</span></a>
+<a class="nav-link active" href="./ai-tutor.html"><span class="nav-icon" aria-hidden="true">✧</span><span>Wi-Fi Doctor</span></a><a class="nav-link" href="./help.html"><span class="nav-icon" aria-hidden="true">?</span><span>Help & Troubleshooting</span></a></nav>
+    <div class="sidebar-bottom"><div class="sidebar-caption">Manage networks you’re authorised to control.</div><button id="logoutButton" class="nav-link logout-button" type="button"><span class="nav-icon" aria-hidden="true">↪</span><span>Sign out</span></button></div>
+  </aside>
+  <button id="sidebarOverlay" class="sidebar-overlay" type="button" aria-label="Close navigation"></button>
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left"><button id="menuButton" class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="page-title"><h1>Wi-Fi Doctor</h1><p>Troubleshoot common Wi-Fi problems</p></div></div>
+      <div class="topbar-right"><button class="btn btn-quiet theme-top-button" type="button" aria-haspopup="true" aria-expanded="false">◐ Themes</button><span class="account-chip" id="accountChip">Checking account…</span></div>
+    </header>
+    <div class="page-content">
+<section class="panel">
+  <p class="eyebrow">NETWORK HELP</p><h2>What problem are you experiencing?</h2>
+  <p class="muted">Choose a symptom to get safe troubleshooting steps. This guide does not claim to scan or repair your router automatically.</p>
+  <div class="form-grid">
+    <div class="field field-wide"><label for="symptom">Problem</label><select id="symptom"><option value="slow">Wi-Fi is slow</option><option value="disconnects">Devices keep disconnecting</option><option value="no-internet">Connected, but no internet</option><option value="weak-signal">Weak signal in some rooms</option><option value="unknown">I am not sure</option></select></div>
+    <div class="field field-wide"><button id="diagnoseButton" class="btn btn-primary" type="button">Show troubleshooting steps</button></div>
+  </div>
+  <div id="diagnosisResult" class="diagnosis-result" aria-live="polite"><p class="muted">Choose a problem and select “Show troubleshooting steps”.</p></div>
+</section>
+<section class="panel">
+  <h2>Before changing router settings</h2>
+  <p class="muted">Make sure you have permission to manage the network. Avoid factory resets unless you know how to restore the router configuration.</p>
+</section>
+
+      <footer class="app-footer">© 2026 Wi-Fi Hub. All rights reserved.</footer>
+    </div>
+  </main>
+</div>
+<script>
+(() => {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const menu = document.getElementById('menuButton');
+  const closeMenu = () => {
+    sidebar?.classList.remove('open');
+    overlay?.classList.remove('show');
+    menu?.setAttribute('aria-expanded', 'false');
+  };
+  menu?.addEventListener('click', () => {
+    const open = !sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', open);
+    overlay.classList.toggle('show', open);
+    menu.setAttribute('aria-expanded', String(open));
+  });
+  overlay?.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.addEventListener('click', closeMenu));
+  const signOut = async () => {
+    try {
+      const mod = await import('./js/firebase.js');
+      await mod.auth.signOut();
+      location.href = './index.html';
+    } catch (err) {
+      const chip = document.getElementById('accountChip');
+      if (chip) chip.textContent = 'Could not sign out';
+      console.error(err);
+    }
+  };
+  document.getElementById('logoutButton')?.addEventListener('click', signOut);
+  document.getElementById('logoutButtonSettings')?.addEventListener('click', signOut);
+  import('./js/firebase.js').then(({auth}) => {
+    import('https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js').then(({onAuthStateChanged}) => {
+      onAuthStateChanged(auth, user => {
+        if (!user) { location.replace('./index.html'); return; }
+        const chip = document.getElementById('accountChip');
+        if (chip) chip.textContent = user.displayName || user.email || 'Signed in';
+      });
+    });
+  }).catch(err => {
+    const chip = document.getElementById('accountChip');
+    if (chip) chip.textContent = 'Authentication unavailable';
+    console.error('Firebase initialisation failed:', err);
+  });
+  if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+})();
+</script>
+<script src="./js/runtime-config.js"></script>
+  <script type="module" src="./js/ai-tutor.js"></script>
+<script src="./js/install.js" defer></script>
+<script type="module" src="./js/theme-menu.js"></script>
+<script type="module" src="./js/v10-enhancements.js"></script>
+</body>
+</html>

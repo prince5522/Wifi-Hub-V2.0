@@ -1,0 +1,26 @@
+{
+  "id": "./index.html",
+  "name": "Wi-Fi Hub",
+  "short_name": "Wi-Fi Hub",
+  "description": "Colourful, offline-first Wi-Fi and Smart Switch companion.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#081321",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

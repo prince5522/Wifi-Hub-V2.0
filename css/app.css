@@ -1,0 +1,54 @@
+/* Wi-Fi Hub page components */
+.auth-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 16% 18%, rgba(139,92,246,.20), transparent 33rem),
+    radial-gradient(ellipse at 82% 82%, rgba(216,180,254,.08), transparent 28rem),
+    #090910;
+}
+.auth-layout { width: min(1120px, calc(100% - 36px)); min-height: 100vh; margin: auto; display: grid; grid-template-columns: 1fr minmax(340px, 440px); align-items: center; gap: clamp(40px, 8vw, 110px); padding: 48px 0; }
+.auth-brand { max-width: 490px; padding: 20px 0; }
+.auth-brand .brand-mark { width: 62px; height: 62px; font-size: 2.5rem; border-radius: 20px; margin-bottom: 32px; }
+.auth-brand h1 { font-size: clamp(3.2rem, 7vw, 5.7rem); line-height: .98; letter-spacing: -.075em; margin-bottom: 24px; }
+.auth-brand h1 span { display: block; color: #93c5fd; }
+.auth-brand > p:not(.eyebrow) { max-width: 410px; color: #b1aec4; font-size: 1.08rem; line-height: 1.8; }
+.auth-note { display: inline-flex; align-items: center; gap: 10px; margin-top: 32px; color: #aaa5bf; font-size: .78rem; }
+.auth-note::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #60a5fa; box-shadow: 0 0 14px rgba(96,165,250,.6); }
+.auth-card { padding: clamp(23px, 4vw, 36px); border: 1px solid rgba(255,255,255,.1); border-radius: 24px; background: linear-gradient(145deg, rgba(28,27,43,.93), rgba(16,16,27,.94)); box-shadow: 0 28px 100px rgba(0,0,0,.42), 0 0 50px rgba(124,58,237,.06); backdrop-filter: blur(20px); }
+.auth-card h2 { font-size: 1.6rem; letter-spacing: -.05em; margin-bottom: 6px; }
+.auth-card > p { font-size: .83rem; }
+.auth-card form { display: grid; gap: 9px; }
+.auth-card form label:not(:first-child) { margin-top: 6px; }
+.auth-card form .btn { margin-top: 5px; }
+.auth-divider { display: flex; align-items: center; gap: 13px; margin: 22px 0 17px; color: #77748b; font-size: .62rem; font-weight: 700; letter-spacing: .13em; }
+.auth-divider::before, .auth-divider::after { content: ''; height: 1px; flex: 1; background: rgba(255,255,255,.09); }
+.auth-card .fine-print { border-top: 1px solid var(--line); padding-top: 15px; }
+.devices-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; margin-top: 16px; }
+.device-card { padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,.025); }
+.device-card h3 { margin-bottom: 5px; }
+.device-card p { color: var(--muted); font-size: .78rem; }
+.device-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: .74rem; }
+@media (max-width: 800px) {
+  .auth-layout { grid-template-columns: 1fr; max-width: 470px; gap: 20px; align-content: center; }
+  .auth-brand { padding: 0; text-align: center; }
+  .auth-brand .brand-mark { margin: 0 auto 18px; width: 50px; height: 50px; font-size: 2rem; border-radius: 16px; }
+  .auth-brand h1 { font-size: 3rem; margin-bottom: 12px; }
+  .auth-brand h1 span { display: inline; }
+  .auth-brand > p:not(.eyebrow) { font-size: .9rem; margin-left: auto; margin-right: auto; }
+  .auth-note { margin-top: 6px; }
+  .auth-card { padding: 24px; }
+}
+@media (max-width: 520px) {
+  .auth-layout { width: min(100% - 24px, 440px); padding: 24px 0; }
+  .auth-brand h1 { font-size: 2.6rem; }
+  .auth-brand > p:not(.eyebrow) { margin-bottom: 8px; }
+  .devices-grid { grid-template-columns: 1fr; }
+}
+
+/* Familiar, accessible Google sign-in button */
+.google-signin { display:flex; align-items:center; justify-content:center; gap:11px; min-height:46px; color:#202124; background:#fff; border:1px solid #dadce0; font-weight:650; box-shadow:0 1px 2px rgba(0,0,0,.12); }
+.google-signin:hover { background:#f8faff; border-color:#bfdbfe; }
+.google-signin:disabled { opacity:.65; cursor:wait; }
+.google-g { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; color:#4285f4; background:#fff; font:700 18px Arial,sans-serif; }
+.auth-divider { margin:16px 0 10px; }
+.auth-divider span { white-space:nowrap; }
