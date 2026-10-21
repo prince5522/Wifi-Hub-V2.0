@@ -1,5 +1,15 @@
 {
   "functions": [{ "source": "functions", "codebase": "default", "runtime": "python312" }],
   "firestore": { "rules": "firestore.rules" },
-  "hosting": { "public": ".", "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "functions/**", "README_SETUP.txt"] }
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "functions/**",
+      "firestore.rules",
+      "README_SETUP.txt"
+    ]
+  }
 }
