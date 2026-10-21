@@ -1,14 +1,13 @@
-// Wi-Fi Hub authentication. This file intentionally loads Firebase dynamically
-// so a failed Firebase/network import can be shown on the page instead of
-// leaving the Sign in button apparently dead.
+// Wi-Fi Hub authentication — lazy loads Firebase so the sign-in button never appears dead.
 const $ = (selector) => document.querySelector(selector);
-const loginForm = $('#loginForm');
-const registerForm = $('#registerForm');
-const showRegister = $('#showRegister');
-const cancelRegister = $('#cancelRegister');
-const googleButton = $('#googleSignIn');
-const authMessage = $('#authMessage');
-const registerMessage = $('#registerMessage');
+
+const loginForm      = $('#loginForm');
+const registerForm   = $('#registerForm');
+const googleButton   = $('#googleSignIn');
+const authMessage    = $('#authMessage');
+const registerMessage= $('#registerMessage');
+
+const MIN_PASSWORD_LENGTH = 8;
 
 function showMessage(el, text, kind = '') {
   if (!el) return;
@@ -30,7 +29,7 @@ function explainError(error) {
     'auth/operation-not-allowed': 'Email/password sign-in is not enabled in Firebase Console.',
     'auth/unauthorized-domain': 'This website domain is not authorised in Firebase Authentication.',
     'auth/email-already-in-use': 'That email already has an account. Please sign in.',
-    'auth/weak-password': 'Choose a stronger password (at least 6 characters).',
+    'auth/weak-password': `Choose a stronger password (at least ${MIN_PASSWORD_LENGTH} characters).`,
     'auth/popup-closed-by-user': 'Google sign-in was closed before it finished.',
     'auth/popup-blocked': 'The browser blocked the Google sign-in window.',
     'permission-denied': 'Firestore denied access. Check the Firestore security rules.'
@@ -55,8 +54,6 @@ function loadFirebase() {
   return firebasePromise;
 }
 
-// Show a clear message if Firebase cannot even load. This was silent with
-// static imports, which can make the button appear to do nothing.
 loadFirebase().catch(error => {
   console.error('Wi-Fi Hub Firebase startup failed:', error);
   showMessage(authMessage, `Login could not start: ${explainError(error)}. Check that js/firebase.js exists and this site is opened over HTTPS.`, 'error');
@@ -93,17 +90,26 @@ googleButton?.addEventListener('click', async () => {
   googleButton.disabled = true;
   showMessage(authMessage, 'Opening Google sign-in…');
   try {
-    const { auth, db, GoogleAuthProvider, signInWithPopup, doc, setDoc, serverTimestamp } = await loadFirebase();
+    const {
+      auth, db, GoogleAuthProvider, signInWithPopup,
+      doc, setDoc, getDoc, serverTimestamp
+    } = await loadFirebase();
+
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    // Create the profile only if absent, so a disabled profile is not silently reactivated.
-    const { getDoc } = await loadFirebase();
+
     const profileRef = doc(db, 'users', user.uid);
     const profile = await getDoc(profileRef);
     if (!profile.exists()) {
-      await setDoc(profileRef, { name: user.displayName || 'Wi-Fi Hub user', email: user.email || '', role: 'user', active: true, createdAt: serverTimestamp() });
+      await setDoc(profileRef, {
+        name: user.displayName || 'Wi-Fi Hub user',
+        email: user.email || '',
+        role: 'user',
+        active: true,
+        createdAt: serverTimestamp()
+      });
     }
     sessionStorage.setItem('wifiHubJustLoggedIn', '1');
     location.replace('./home.html');
@@ -115,38 +121,33 @@ googleButton?.addEventListener('click', async () => {
   }
 });
 
-showRegister?.addEventListener('click', () => {
-  if (loginForm) loginForm.hidden = true;
-  if (registerForm) registerForm.hidden = false;
-  showRegister.hidden = true;
-  showMessage(authMessage, '');
-  $('#registerName')?.focus();
-});
-
-cancelRegister?.addEventListener('click', () => {
-  if (registerForm) registerForm.hidden = true;
-  if (loginForm) loginForm.hidden = false;
-  if (showRegister) showRegister.hidden = false;
-  showMessage(registerMessage, '');
-});
-
 registerForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
   const button = registerForm.querySelector('[type="submit"]');
   const name = ($('#registerName')?.value || '').trim();
   const email = ($('#registerEmail')?.value || '').trim().toLowerCase();
   const password = $('#registerPassword')?.value || '';
-  const confirm = $('#registerPasswordConfirm')?.value || '';
+  const confirm  = $('#registerPasswordConfirm')?.value || '';
+
   if (!name) return showMessage(registerMessage, 'Please enter your name.', 'error');
-  if (password.length < 6) return showMessage(registerMessage, 'Use a password with at least 6 characters.', 'error');
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return showMessage(registerMessage, `Use a password with at least ${MIN_PASSWORD_LENGTH} characters.`, 'error');
+  }
   if (password !== confirm) return showMessage(registerMessage, 'The passwords do not match.', 'error');
+
   if (button) { button.disabled = true; button.textContent = 'Creating account…'; }
   showMessage(registerMessage, 'Creating your secure account…');
+
   try {
-    const { auth, db, createUserWithEmailAndPassword, updateProfile, doc, setDoc, serverTimestamp } = await loadFirebase();
+    const {
+      auth, db, createUserWithEmailAndPassword, updateProfile,
+      doc, setDoc, serverTimestamp
+    } = await loadFirebase();
     const credential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(credential.user, { displayName: name });
-    await setDoc(doc(db, 'users', credential.user.uid), { name, email, role: 'user', active: true, createdAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', credential.user.uid), {
+      name, email, role: 'user', active: true, createdAt: serverTimestamp()
+    });
     sessionStorage.setItem('wifiHubJustLoggedIn', '1');
     location.replace('./home.html');
   } catch (error) {
