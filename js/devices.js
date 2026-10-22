@@ -33,7 +33,7 @@ async function refresh() {
   if (notice) notice.textContent = 'Checking for a configured device source…';
   if (host) host.replaceChildren();
   try {
-    await requireUser();
+    await requireUser({ redirect: false });
     const data = await apiRequest('/devices');
     const devices = Array.isArray(data.devices) ? data.devices : [];
     if (!devices.length) {
@@ -55,7 +55,7 @@ async function refresh() {
   } catch (e) {
     console.warn('Live device discovery unavailable:', e);
     showUnavailable(e.message.includes('backend URL')
-      ? 'Device discovery needs the secure Python backend URL and a compatible router integration. You can still save a device registration below.'
+      ? 'Device discovery needs the secure backend URL and a compatible router integration. You can still save a device registration below.'
       : e.message + ' You can still save a device registration below.');
   }
 }
@@ -64,10 +64,16 @@ async function addDevice(event) {
   event.preventDefault();
   const output = $('#addDeviceMessage');
   const button = $('#addDeviceButton');
+  
   if (!session) {
-    message(output, 'Waiting for sign-in. Refresh the page after signing in.', 'error');
-    return;
+    // Try to grab the session right now in case the page loaded too fast
+    session = await requireUser({ redirect: false });
+    if (!session) {
+      message(output, 'Waiting for sign-in. Refresh the page after signing in.', 'error');
+      return;
+    }
   }
+
   const name = $('#newDeviceName').value.trim();
   const type = $('#newDeviceType').value;
   const address = $('#newDeviceAddress').value.trim();
@@ -133,7 +139,7 @@ async function loadSavedDevices() {
               method: 'POST', body: JSON.stringify({})
             });
             window.prompt('Copy this device token now and place it in the device firmware. It will not be shown again.', result.deviceToken);
-            message(notice, 'Device credential created. The device still needs secure firmware that polls the backend and executes only supported commands.', 'success');
+            message(notice, 'Device credential created.', 'success');
           } catch (e) {
             message(notice, 'Could not provision device: ' + e.message, 'error');
           } finally {
@@ -148,7 +154,7 @@ async function loadSavedDevices() {
           button.className = 'btn btn-secondary';
           button.textContent = label;
           button.addEventListener('click', async () => {
-            if (!confirm(`Queue ${label} for ${data.name || 'this device'}? The device must be online with compatible firmware.`)) return;
+            if (!confirm(`Queue ${label} for ${data.name || 'this device'}?`)) return;
             button.disabled = true;
             try {
               const result = await apiRequest(`/devices/${encodeURIComponent(d.id)}/command`, {
@@ -176,10 +182,13 @@ async function loadSavedDevices() {
 $('#refreshDevices')?.addEventListener('click', refresh);
 $('#addDeviceForm')?.addEventListener('submit', addDevice);
 
-try {
-  session = await requireUser();
-  if (session) await Promise.allSettled([refresh(), loadSavedDevices()]);
-} catch (e) {
+// Initialize the page and catch the user session
+requireUser().then(async (userSession) => {
+  session = userSession;
+  if (session) {
+    await Promise.allSettled([refresh(), loadSavedDevices()]);
+  }
+}).catch(e => {
   console.error(e);
   showUnavailable('Could not verify the signed-in user. ' + explainDeviceError(e));
-}
+});
